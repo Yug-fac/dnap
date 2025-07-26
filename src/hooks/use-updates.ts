@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore"
+import { collection, onSnapshot, orderBy, query, where, limit } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 
 export function useUpdates() {
@@ -9,7 +9,12 @@ export function useUpdates() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const q = query(collection(db, "updates"), where("isActive", "==", true), orderBy("createdAt", "desc"))
+    const q = query(
+      collection(db, "updates"), 
+      where("status", "==", "active"), 
+      orderBy("createdAt", "desc"),
+      limit(10)
+    )
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const updatesData = snapshot.docs.map((doc) => ({

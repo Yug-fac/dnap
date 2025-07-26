@@ -73,6 +73,7 @@ export const deleteTeamMember = async (id: string) => {
 export const addUpdate = async (updateData: any) => {
   return await addDoc(collection(db, "updates"), {
     ...updateData,
+    isActive: updateData.status === "active",
     createdAt: serverTimestamp(),
   })
 }
@@ -80,6 +81,7 @@ export const addUpdate = async (updateData: any) => {
 export const updateUpdate = async (id: string, updateData: any) => {
   return await updateDoc(doc(db, "updates", id), {
     ...updateData,
+    isActive: updateData.status === "active",
     updatedAt: serverTimestamp(),
   })
 }
