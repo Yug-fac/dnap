@@ -74,9 +74,6 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <img src="/src/assets/dna-logo.jpg" alt="DNA Publications" className="h-8 w-auto" />
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-orange-500 bg-clip-text text-transparent">
-                DNA Publications
-              </span>
             </div>
             <p className="text-muted-foreground mb-6 max-w-md">
               The home of ambitious writers. Bringing exceptional stories to readers worldwide.

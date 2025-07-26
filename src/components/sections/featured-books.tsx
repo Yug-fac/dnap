@@ -5,11 +5,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Star, Heart, ShoppingCart, Eye } from "lucide-react"
+import { useFeaturedBooks } from "@/hooks/use-featured-books"
 import anime from "animejs"
 
 export function FeaturedBooks() {
   const sectionRef = useRef<HTMLElement>(null)
   const [hoveredBook, setHoveredBook] = useState<number | null>(null)
+  const { books: featuredBooks, loading } = useFeaturedBooks()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,82 +39,6 @@ export function FeaturedBooks() {
 
     return () => observer.disconnect()
   }, [])
-
-  // Mock data - in real app, this would come from Firebase
-  const featuredBooks = [
-    {
-      id: 1,
-      title: "Whispers of Dawn",
-      author: "Sarah Johnson",
-      genre: "Poetry",
-      price: "₹299",
-      rating: 4.8,
-      reviews: 124,
-      cover: "/placeholder.svg?height=300&width=200",
-      description: "A beautiful collection of poems about hope, love, and new beginnings.",
-      badge: "New Release",
-    },
-    {
-      id: 2,
-      title: "Digital Dreams",
-      author: "Alex Chen",
-      genre: "Sci-Fi",
-      price: "₹399",
-      rating: 4.9,
-      reviews: 89,
-      cover: "/placeholder.svg?height=300&width=200",
-      description: "A thrilling journey through virtual worlds and artificial consciousness.",
-      badge: "Bestseller",
-    },
-    {
-      id: 3,
-      title: "The Last Garden",
-      author: "Maria Rodriguez",
-      genre: "Fiction",
-      price: "₹349",
-      rating: 4.7,
-      reviews: 156,
-      cover: "/placeholder.svg?height=300&width=200",
-      description: "A heartwarming tale of family, nature, and the power of growth.",
-      badge: "Award Winner",
-    },
-    {
-      id: 4,
-      title: "Midnight Chronicles",
-      author: "David Thompson",
-      genre: "Mystery",
-      price: "₹329",
-      rating: 4.6,
-      reviews: 203,
-      cover: "/placeholder.svg?height=300&width=200",
-      description: "A gripping mystery that will keep you guessing until the very end.",
-      badge: "Popular",
-    },
-    {
-      id: 5,
-      title: "Ocean's Embrace",
-      author: "Lisa Park",
-      genre: "Romance",
-      price: "₹279",
-      rating: 4.8,
-      reviews: 178,
-      cover: "/placeholder.svg?height=300&width=200",
-      description: "A passionate love story set against the backdrop of coastal beauty.",
-      badge: "Trending",
-    },
-    {
-      id: 6,
-      title: "Quantum Leap",
-      author: "Dr. Robert Kim",
-      genre: "Science",
-      price: "₹449",
-      rating: 4.9,
-      reviews: 67,
-      cover: "/placeholder.svg?height=300&width=200",
-      description: "Exploring the fascinating world of quantum physics made accessible.",
-      badge: "Educational",
-    },
-  ]
 
   const getBadgeColor = (badge: string) => {
     switch (badge) {
@@ -145,8 +71,20 @@ export function FeaturedBooks() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredBooks.map((book, index) => (
+        {loading ? (
+          <div className="text-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Loading featured books...</p>
+          </div>
+        ) : featuredBooks.length === 0 ? (
+          <div className="text-center py-20">
+            <BookOpen className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No Books Available</h3>
+            <p className="text-muted-foreground">No featured books have been added yet.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredBooks.map((book, index) => (
             <Card
               key={book.id}
               className="book-card group hover:shadow-2xl transition-all duration-500 overflow-hidden border-0 bg-background/80 backdrop-blur-sm"
@@ -155,15 +93,13 @@ export function FeaturedBooks() {
             >
               <div className="relative overflow-hidden">
                 <img
-                  src={book.cover || "/placeholder.svg"}
+                  src={book.imageUrl || "/placeholder.svg"}
                   alt={book.title}
                   className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                <Badge className={`absolute top-3 left-3 ${getBadgeColor(book.badge)} text-white`}>{book.badge}</Badge>
-                <div className="absolute top-3 right-3">
-                  <Button
-                    size="sm"
-                    variant="secondary"
+                <Badge className={`absolute top-3 left-3 ${getBadgeColor(book.category)} text-white`}>
+                  {book.category}
+                </Badge>
                     className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   >
                     <Heart className="h-4 w-4" />
@@ -206,7 +142,7 @@ export function FeaturedBooks() {
                   <div className="flex items-center space-x-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span className="text-sm font-medium">{book.rating}</span>
-                    <span className="text-xs text-muted-foreground">({book.reviews})</span>
+                    <span className="text-xs text-muted-foreground">(124)</span>
                   </div>
                   <span className="text-lg font-bold text-primary">{book.price}</span>
                 </div>
@@ -223,7 +159,8 @@ export function FeaturedBooks() {
               </CardContent>
             </Card>
           ))}
-        </div>
+          </div>
+        )}
 
         <div className="text-center mt-12">
           <Button size="lg" variant="outline" className="group bg-transparent">

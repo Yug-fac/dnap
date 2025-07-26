@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { BookOpen, Plus, MoreHorizontal, Edit, Trash2, Star } from "lucide-react"
 import { useBooks } from "@/hooks/use-books"
-import { deleteBook } from "@/lib/firebase-utils"
+import { deleteBook, toggleFeaturedBook, getFeaturedBooksCount } from "@/lib/firebase-utils"
 import { useToast } from "@/hooks/use-toast"
 import { AdminLayout } from "@/components/admin/admin-layout"
 import { BookModal } from "@/components/admin/book-modal"
@@ -42,12 +42,14 @@ export default function AdminBooks() {
       toast({
         title: "Success",
         description: "Book deleted successfully",
+        duration: 3000,
       })
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to delete book",
         variant: "destructive",
+        duration: 3000,
       })
     }
   }
@@ -55,6 +57,38 @@ export default function AdminBooks() {
   const handleModalClose = () => {
     setIsModalOpen(false)
     setSelectedBook(null)
+  }
+
+  const handleToggleFeatured = async (book: any) => {
+    try {
+      // Check if trying to feature more than 6 books
+      if (!book.isFeatured) {
+        const featuredCount = await getFeaturedBooksCount()
+        if (featuredCount >= 6) {
+          toast({
+            title: "Limit Reached",
+            description: "Maximum of 6 featured books allowed",
+            variant: "destructive",
+            duration: 3000,
+          })
+          return
+        }
+      }
+
+      await toggleFeaturedBook(book.id, !book.isFeatured)
+      toast({
+        title: "Success",
+        description: `Book ${book.isFeatured ? 'removed from' : 'added to'} featured books`,
+        duration: 3000,
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update featured status",
+        variant: "destructive",
+        duration: 3000,
+      })
+    }
   }
 
   const renderStars = (rating: number) => {
@@ -106,6 +140,7 @@ export default function AdminBooks() {
                     <TableHead>Category</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead>Rating</TableHead>
+                    <TableHead>Featured</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -132,6 +167,16 @@ export default function AdminBooks() {
                             ({book.rating || 4.5})
                           </span>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleToggleFeatured(book)}
+                          className={book.isFeatured ? "text-yellow-500" : "text-gray-400"}
+                        >
+                          <Star className={`h-4 w-4 ${book.isFeatured ? "fill-current" : ""}`} />
+                        </Button>
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>

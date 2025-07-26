@@ -34,7 +34,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const navigation = [
     { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Books", href: "/admin/books", icon: BookOpen },
-    { name: "Speeches", href: "/admin/speeches", icon: Mic },
+    { name: "Users", href: "/admin/users", icon: Users },
+    { name: "Team", href: "/admin/team", icon: Users },
     { name: "Messages", href: "/admin/messages", icon: MessageSquare },
     { name: "Emails", href: "/admin/emails", icon: Mail },
     { name: "Testimonials", href: "/admin/testimonials", icon: Star },

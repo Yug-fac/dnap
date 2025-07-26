@@ -24,7 +24,8 @@ import AdminTestimonials from "@/pages/admin/testimonials"
 import AdminUpdates from "@/pages/admin/updates"
 import AdminMessages from "@/pages/admin/messages"
 import AdminEmails from "@/pages/admin/emails"
-import AdminSpeeches from "@/pages/admin/speeches"
+import AdminUsers from "@/pages/admin/users"
+import AdminTeam from "@/pages/admin/team"
 import AdminLogin from "@/pages/admin/login"
 
 import "./globals.css"
@@ -48,7 +49,8 @@ export default function App() {
                       <Route path="/" element={<AdminDashboard />} />
                       <Route path="/dashboard" element={<AdminDashboard />} />
                       <Route path="/books" element={<AdminBooks />} />
-                      <Route path="/speeches" element={<AdminSpeeches />} />
+                      <Route path="/users" element={<AdminUsers />} />
+                      <Route path="/team" element={<AdminTeam />} />
                       <Route path="/testimonials" element={<AdminTestimonials />} />
                       <Route path="/updates" element={<AdminUpdates />} />
                       <Route path="/messages" element={<AdminMessages />} />

@@ -22,11 +22,11 @@ export function UpdatesBar() {
       })
 
       // Auto-rotate updates
-      const interval = setInterval(() => {
+      const rotateInterval = setInterval(() => {
         setCurrentUpdate((prev) => (prev + 1) % updates.length)
-      }, 4000)
+      }, 3000)
 
-      return () => clearInterval(interval)
+      return () => clearInterval(rotateInterval)
     }
   }, [isVisible, updates.length])
 

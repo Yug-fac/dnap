@@ -8,6 +8,7 @@ import {
   getDocs,
   query,
   where,
+  countFromServer,
 } from "firebase/firestore"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { db, storage } from "@/lib/firebase"
@@ -48,6 +49,20 @@ export const updateBook = async (id: string, bookData: any) => {
 
 export const deleteBook = async (id: string) => {
   return await deleteDoc(doc(db, "books", id))
+}
+
+// Featured Books
+export const toggleFeaturedBook = async (id: string, isFeatured: boolean) => {
+  return await updateDoc(doc(db, "books", id), {
+    isFeatured,
+    updatedAt: serverTimestamp(),
+  })
+}
+
+export const getFeaturedBooksCount = async (): Promise<number> => {
+  const q = query(collection(db, "books"), where("isFeatured", "==", true))
+  const snapshot = await countFromServer(q)
+  return snapshot.data().count
 }
 
 // Team
@@ -148,4 +163,23 @@ export const uploadImage = async (file: File, folder: string): Promise<string> =
   const downloadURL = await getDownloadURL(snapshot.ref)
 
   return downloadURL
+}
+
+// Users
+export const addUser = async (userData: any) => {
+  return await addDoc(collection(db, "users"), {
+    ...userData,
+    createdAt: serverTimestamp(),
+  })
+}
+
+export const updateUser = async (id: string, userData: any) => {
+  return await updateDoc(doc(db, "users", id), {
+    ...userData,
+    updatedAt: serverTimestamp(),
+  })
+}
+
+export const deleteUser = async (id: string) => {
+  return await deleteDoc(doc(db, "users", id))
 }
